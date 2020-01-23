@@ -1,6 +1,5 @@
-package com.github.szsalyi.bvhomework.message;
+package com.github.szsalyi.bvhomework.websocket.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -11,7 +10,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
-import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
 import javax.servlet.http.HttpSession;
 import java.util.Map;
@@ -24,9 +22,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(final MessageBrokerRegistry config) {
         config.enableSimpleBroker("/queue/", "/topic/");
         config.setApplicationDestinationPrefixes("/app");
-/*
-        config.setUserDestinationPrefix("/secured/user");
-*/
     }
 
     @Override

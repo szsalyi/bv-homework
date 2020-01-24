@@ -48,7 +48,7 @@ function sendMessage() {
 }
 
 function notify(message) {
-    console.log(message);
+    console.log(message.body);
     $("#conversation").append("<tr><td>" + message.body.sender + "</td>" + "<td>" + message.body.content + "</td></tr>");
 }
 

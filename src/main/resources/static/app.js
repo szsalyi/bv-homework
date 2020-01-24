@@ -23,6 +23,11 @@ function connect() {
             alert("Error " + message.body);
         });
 
+        stompClient.subscribe("/topic/public.messages", function(message) {
+            alert("Message Public: " + message);
+
+        });
+
         stompClient.subscribe("/user/queue/reply", function(message) {
             alert("Message " + message);
             notify(message);
@@ -42,9 +47,27 @@ function disconnect() {
 
 
 function sendMessage() {
-    var sender = document.getElementById('sender').value;
+    var message;
+
+    if ($('#toUser').text() == 'public') {
+        message = {
+            'sender' : $('#sender').val(),
+            'content': $('#content').val()
+        }
+    } else {
+        message = {
+            'sender' : $('#sender').val(),
+            'content' : $('#content').val(),
+            'toUser' : $('#toUser').val()
+        }
+    }
+
+    /*var sender = document.getElementById('sender').value;
     var content = document.getElementById('content').value;
-    stompClient.send("/app/message", {}, JSON.stringify({'sender': sender, 'content': content}));
+    stompClient.send("/chatroom/send.message", {}, JSON.stringify({'sender': sender, 'content': content}));*/
+
+    stompClient.send("/app/send.message", {}, JSON.stringify(message));
+    $('#content').html("").focus();
 }
 
 function notify(message) {

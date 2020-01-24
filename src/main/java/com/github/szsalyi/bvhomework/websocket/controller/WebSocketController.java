@@ -2,6 +2,7 @@ package com.github.szsalyi.bvhomework.websocket.controller;
 
 import com.github.szsalyi.bvhomework.message.Message;
 import com.github.szsalyi.bvhomework.message.MessageRepository;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -14,19 +15,19 @@ import java.security.Principal;
 @Controller
 public class WebSocketController {
 
-    @Autowired
-    private MessageRepository messageRepository;
+    /*@Autowired
+    private MessageRepository messageRepository;*/
 
-    @MessageMapping("/message")
+    /*@MessageMapping("/message")
     @SendToUser("/queue/reply")
-    public Message processMessageFromClient(@Payload final Message message, final Principal principal) throws Exception {
+    public String processMessageFromClient(@Payload final Message message, final Principal principal) throws Exception {
         messageRepository.save(message);
-        return message;
-    }
+        return new Gson().toJson(message);
+    }*/
 
-    @MessageExceptionHandler
+   /* @MessageExceptionHandler
     @SendToUser("/queue/errors")
     public String handleException(final Throwable exception) {
         return exception.getMessage();
-    }
+    }*/
 }

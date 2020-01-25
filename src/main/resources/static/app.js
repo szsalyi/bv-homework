@@ -1,4 +1,5 @@
 var stompClient = null;
+var greetingMessage;
 
 function setConnected(connected) {
     $("#connect").prop("disabled", connected);
@@ -15,22 +16,28 @@ function setConnected(connected) {
 function connect() {
     var socket = new SockJS('/ws');
     stompClient = Stomp.over(socket);
+    console.log($('#fromUser').val());
 
-    stompClient.connect({}, function (frame) {
+    stompClient.connect({'user' : $('#fromUser').val() }, function (frame) {
+        $('#fromUser').prop('disabled', true);
         setConnected(true);
         console.log(frame);
+        stompClient.send("/app/register", {}, JSON.stringify({'fromUser': $('#fromUser').val()}));
+        greetingMessage = 'Welcome ' + $('#fromUser').val();
+        notify(JSON.stringify({'fromUser': 'System', 'content' : greetingMessage}));
+
         stompClient.subscribe("/user/queue/errors", function(message) {
             alert("Error " + message.body);
         });
 
-        stompClient.subscribe("/topic/public.messages", function(message) {
+        stompClient.subscribe("/topic/public", function(message) {
             alert("Message Public: " + message);
-
+        notify(message);
         });
 
         stompClient.subscribe("/user/queue/reply", function(message) {
-            alert("Message " + message);
-            notify(message);
+            alert("Message user: " + message);
+            notify(message.body);
         });
     }, function(error) {
         alert("STOMP error " + error);
@@ -42,6 +49,7 @@ function disconnect() {
         stompClient.disconnect();
     }
     setConnected(false);
+    $('#fromUser').prop('disabled', false);
     console.log("Disconnected");
 }
 
@@ -49,14 +57,14 @@ function disconnect() {
 function sendMessage() {
     var message;
 
-    if ($('#toUser').text() == 'public') {
+    if ($('#toUser').text() === 'public' || $('#toUser').text() === null) {
         message = {
-            'sender' : $('#sender').val(),
+            'fromUser' : $('#fromUser').val(),
             'content': $('#content').val()
         }
     } else {
         message = {
-            'sender' : $('#sender').val(),
+            'fromUser' : $('#fromUser').val(),
             'content' : $('#content').val(),
             'toUser' : $('#toUser').val()
         }
@@ -65,14 +73,19 @@ function sendMessage() {
     /*var sender = document.getElementById('sender').value;
     var content = document.getElementById('content').value;
     stompClient.send("/chatroom/send.message", {}, JSON.stringify({'sender': sender, 'content': content}));*/
+    console.log(message);
 
-    stompClient.send("/app/send.message", {}, JSON.stringify(message));
+    stompClient.send("/app/send", {}, JSON.stringify(message));
     $('#content').html("").focus();
 }
 
 function notify(message) {
-    console.log(message.body);
-    $("#conversation").append("<tr><td>" + message.body.sender + "</td>" + "<td>" + message.body.content + "</td></tr>");
+    console.log(message);
+    $("#conversation").append("<tr><td>" + message.fromUser + "</td>" + "<td>" + message.content + "</td></tr>");
+}
+
+function greeting() {
+
 }
 
 

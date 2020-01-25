@@ -22,23 +22,14 @@ public class InstantMessage {
     private Long id;
 
     @NonNull
-    @ManyToOne
-    @JoinColumn(name="fromMessages", insertable = false, updatable = false)
-    private User fromUser;
+    private String fromUser;
 
-    @NonNull
+    private String toUser;
 
-    @ManyToOne
-    @JoinColumn(name="toMessages", insertable = false, updatable = false)
-    private User toUser;
-
-    @NonNull
     @NotBlank
     @Size(max = 500)
     @Column(name = "content", nullable = false)
     private String content;
-
-    //private String chatRoomId;
 
     public boolean isPublic() {
         return toUser == null;

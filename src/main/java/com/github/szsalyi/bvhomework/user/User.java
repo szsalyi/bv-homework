@@ -26,10 +26,4 @@ public class User {
     @Size(max = 40)
     @Column(name = "name", nullable = false)
     private String name;
-
-    @OneToMany(targetEntity = InstantMessage.class, mappedBy = "fromUser")
-    private List<InstantMessage> fromMessages;
-
-    @OneToMany(targetEntity = InstantMessage.class, mappedBy = "toUser")
-    private List<InstantMessage> toMessages;
 }

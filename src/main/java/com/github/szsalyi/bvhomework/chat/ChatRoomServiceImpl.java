@@ -31,8 +31,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         jmsTemplate.convertAndSend(queue, instantMessage);
 */
         messagingTemplate.convertAndSendToUser(
-                instantMessage.getToUser().getName(), instantMessage.getFromUser().getName(), instantMessage);
-        instantMessageService.appendInstantMessageToConversations(instantMessage);
+                instantMessage.getToUser(), "/queue/reply", instantMessage);
+        messagingTemplate.convertAndSendToUser(
+                instantMessage.getFromUser(), "/queue/reply", instantMessage);
+        instantMessageService.save(instantMessage);
     }
 
     @Override
